@@ -1,0 +1,9 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="VNCOverlayInstaller" Manufacturer="TODO Manufacturer" Version="1.0.0.0" UpgradeCode="20d6429e-8cca-4630-b1e2-ae0a2aa17e79">
+    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+
+    <Feature Id="Main">
+      <ComponentGroupRef Id="ExampleComponents" />
+    </Feature>
+  </Package>
+</Wix>
