@@ -8,15 +8,12 @@
         <ComponentRef Id="WindowsService" />  
     </Feature>
 
-	  <!-- Property to hold the executable path -->
-	  <Property Id="WIX_SHELL_EXEC_TARGET" Value="VNCOverlayUI.exe" />
-
 	  <!-- CustomAction to use WixShellExec for launching the application -->
 	  <CustomAction Id="LaunchApplication"
-					Directory="INSTALLFOLDER"
-					ExeCommand="&quot;[INSTALLFOLDER][WIX_SHELL_EXEC_TARGET]&quot;"
+					FileRef="WPFAppEXE"
+					ExeCommand=""
 					Execute="immediate"
-					Return="check"
+					Return="asyncNoWait"
 					Impersonate="no" />
 
 	  <!-- Schedule the custom action to run after InstallFinalize -->
