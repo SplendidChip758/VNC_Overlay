@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Remoting.Lifetime;
 using System.ServiceProcess;
-using System.Text;
 using System.Timers;
 
 namespace VNCOverlay

@@ -10,12 +10,23 @@
         WindowStartupLocation="CenterScreen" ShowInTaskbar="False"
         Topmost="True" ResizeMode="NoResize">
     <Window.Background>
-        <SolidColorBrush Color="black" Opacity="0.4"/>
+        <SolidColorBrush Color="Transparent" Opacity="0"/>
     </Window.Background>
     <Grid>
-        <!-- Your UI elements go here -->
-        <TextBlock Text="Remote Connection Active" Foreground="White" Opacity="0.8" FontSize="32"
+        <!-- Semi-transparent red bars on the sides -->
+        <Rectangle HorizontalAlignment="Left" Width="25" VerticalAlignment="Stretch">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="Red" Opacity="0.5"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Rectangle HorizontalAlignment="Right" Width="25" VerticalAlignment="Stretch">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="Red" Opacity="0.5"/>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <!-- Text indicating remote connection -->
+        <TextBlock Text="Remote Connection Active" Foreground="Black" Opacity="0.8" FontSize="32"
                    HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        
     </Grid>
 </Window>

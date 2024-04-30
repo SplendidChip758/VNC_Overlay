@@ -1,10 +1,9 @@
-﻿using System;
+﻿using System.IO;
 using System.IO.Pipes;
-using System.IO;
-using System.Windows;
-using System.Threading.Tasks;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace VNCOverlayUI
 {
@@ -28,7 +27,8 @@ namespace VNCOverlayUI
 
         private void StartPipeServer()
         {
-            Task.Run(() => {
+            Task.Run(() =>
+            {
                 PipeSecurity pipeSecurity = new PipeSecurity();
                 SecurityIdentifier sid = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
                 pipeSecurity.AddAccessRule(new PipeAccessRule(sid, PipeAccessRights.ReadWrite, AccessControlType.Allow));

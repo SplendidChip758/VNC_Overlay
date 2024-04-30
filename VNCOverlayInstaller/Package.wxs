@@ -18,7 +18,7 @@
 
 	  <!-- Schedule the custom action to run after InstallFinalize -->
 	  <InstallExecuteSequence>
-		  <Custom Action="LaunchApplication" After="InstallFinalize" Condition="NOT Installed AND NOT REMOVE" />
+		  <Custom Action="LaunchApplication" After="InstallFinalize" Condition="NOT REMOVE" />
 	  </InstallExecuteSequence>
   </Package>
 </Wix>
