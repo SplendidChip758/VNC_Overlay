@@ -8,6 +8,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VNCOverlayUI", "VNCOverlayUI\VNCOverlayUI.csproj", "{B60FC822-BE1F-4D9D-B288-12A7B7AD5664}"
 EndProject
 Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "VNCOverlayInstaller", "VNCOverlayInstaller\VNCOverlayInstaller.wixproj", "{82E38051-EBCB-4DBC-85C0-26A76C136E80}"
+	ProjectSection(ProjectDependencies) = postProject
+		{970E9DC1-CC40-4597-855D-C69639FCBFBA} = {970E9DC1-CC40-4597-855D-C69639FCBFBA}
+		{B60FC822-BE1F-4D9D-B288-12A7B7AD5664} = {B60FC822-BE1F-4D9D-B288-12A7B7AD5664}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
