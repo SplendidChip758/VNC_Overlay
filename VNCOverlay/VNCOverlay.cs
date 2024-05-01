@@ -8,33 +8,43 @@ using System.Timers;
 namespace VNCOverlay
 {
     public partial class VNCOverlay : ServiceBase
-    {
-
+    {       
         private Timer checkPortTimer;
         private bool isOverlayVisible = false;
 
         public VNCOverlay()
         {
             InitializeComponent();
+
+            if (!EventLog.SourceExists("VNCOverlay"))
+            {
+                EventLog.CreateEventSource("VNCOverlay", "VNCOverlayLog");
+            }
+            eventLog1 = new EventLog
+            {
+                Source = "VNCOverlay",
+                Log = "VNCOverlayLog"
+            };
+
             checkPortTimer = new Timer(10000); // Set the interval to 10 seconds (10000 milliseconds)
             checkPortTimer.Elapsed += (sender, e) => CheckPortUsage(5900); // Replace 12345 with your port
             checkPortTimer.AutoReset = true;
             checkPortTimer.Enabled = true;
 
-            EventLog.WriteEntry("Service started and monitoring port.");
+            eventLog1.WriteEntry("Service started and monitoring port.");
         }
 
         protected override void OnStart(string[] args)
         {
             checkPortTimer.Start();
-            EventLog.WriteEntry("Service started and is now monitoring port.");
+            eventLog1.WriteEntry("Service started and is now monitoring port.");
         }
 
         protected override void OnStop()
         {
             checkPortTimer.Stop();
             SendCommandToOverlay("hide"); // Ensure overlay is hidden when service stops
-            EventLog.WriteEntry("Service stopped.");
+            eventLog1.WriteEntry("Service stopped.");
         }
 
         private void CheckPortUsage(int port)
@@ -59,7 +69,7 @@ namespace VNCOverlay
             }
             catch (Exception ex)
             {
-                EventLog.WriteEntry("Error running netstat: " + ex.Message, EventLogEntryType.Error);
+                eventLog1.WriteEntry("Error running netstat: " + ex.Message, EventLogEntryType.Error);
             }
         }
 
@@ -113,11 +123,11 @@ namespace VNCOverlay
                 }
                 catch (System.TimeoutException tex)
                 {
-                    EventLog.WriteEntry($"Connection timeout: {tex.Message}", EventLogEntryType.Error);
+                    eventLog1.WriteEntry($"Connection timeout: {tex.Message}", EventLogEntryType.Error);
                 }
                 catch (Exception ex)
                 {
-                    EventLog.WriteEntry($"Failed to send command '{command}' to overlay: {ex.Message}", EventLogEntryType.Error);
+                    eventLog1.WriteEntry($"Failed to send command '{command}' to overlay: {ex.Message}", EventLogEntryType.Error);
                 }
             }
         }
