@@ -13,6 +13,7 @@
                     Account="LocalSystem"
                     ErrorControl="ignore" />
 		  <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="VNCOverlay" Wait="yes" />
+		  <File Id="ServiceConfig" Source="E:\source\repos\VNCOverlay\VNCOverlay\bin\Release\VNCOverlay.exe.config"/>
 	  </Component>
   </Fragment>
 </Wix>

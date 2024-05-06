@@ -5,7 +5,9 @@
 
     <Feature Id="Main">
 		<ComponentRef Id="WPFApp" />
-        <ComponentRef Id="WindowsService" />  
+		<ComponentRef Id="WindowsFrom"/>
+        <ComponentRef Id="WindowsService" />
+		
     </Feature>
 
 	  <!-- CustomAction to use WixShellExec for launching the application -->

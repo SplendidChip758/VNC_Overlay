@@ -4,47 +4,80 @@ using System.IO;
 using System.IO.Pipes;
 using System.ServiceProcess;
 using System.Timers;
+using System.Configuration;
 
 namespace VNCOverlay
 {
     public partial class VNCOverlay : ServiceBase
     {       
+        private EventLog _eventLog;
         private Timer checkPortTimer;
         private bool isOverlayVisible = false;
+        private int portNumber;
 
         public VNCOverlay()
         {
             InitializeComponent();
+            Debugger.Launch();
 
             if (!EventLog.SourceExists("VNCOverlay"))
             {
+                // Create the source if it does not exist.
                 EventLog.CreateEventSource("VNCOverlay", "VNCOverlayLog");
             }
-            eventLog1 = new EventLog
+            else
             {
-                Source = "VNCOverlay",
-                Log = "VNCOverlayLog"
-            };
+                // Check which log it is registered to
+                string logName = EventLog.LogNameFromSourceName("VNCOverlay", ".");
+                if (logName != "VNCOverlayLog")
+                {
+                    // Delete and recreate the source if registered incorrectly
+                    EventLog.DeleteEventSource("VNCOverlay");
+                    EventLog.CreateEventSource("VNCOverlay", "VNCOverlayLog");
+                }
+            }
+
+            _eventLog = new EventLog();
+            _eventLog.Source = "VNCOverlay";
+            _eventLog.Log = "VNCOverlayLog";
+            _eventLog.WriteEntry("Your log message here", EventLogEntryType.Information);
+
+            // Try to read the port number from the configuration file
+            try
+            {
+                string portValue = ConfigurationManager.AppSettings["PortNumber"];
+                if (!int.TryParse(portValue, out portNumber))
+                {
+                    // If parsing fails or the value is null, set to default
+                    portNumber = 5900; // Set your desired default port number
+                    _eventLog.WriteEntry($"Failed to read 'PortNumber' from app.config. Using default port {portNumber}.", EventLogEntryType.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                portNumber = 5900; // Set your desired default port number
+                _eventLog.WriteEntry($"Error reading 'PortNumber' from app.config. Using default port {portNumber}. Exception: {ex.Message}", EventLogEntryType.Error);
+            }
 
             checkPortTimer = new Timer(10000); // Set the interval to 10 seconds (10000 milliseconds)
-            checkPortTimer.Elapsed += (sender, e) => CheckPortUsage(5900); // Replace 12345 with your port
+            checkPortTimer.Elapsed += (sender, e) => CheckPortUsage(portNumber); // Replace 12345 with your port
             checkPortTimer.AutoReset = true;
             checkPortTimer.Enabled = true;
 
-            eventLog1.WriteEntry("Service started and monitoring port.");
+            _eventLog.WriteEntry("Service started and monitoring port.");
         }
 
         protected override void OnStart(string[] args)
         {
             checkPortTimer.Start();
-            eventLog1.WriteEntry("Service started and is now monitoring port.");
+            _eventLog.WriteEntry("Service started and is now monitoring port.");
         }
 
         protected override void OnStop()
         {
             checkPortTimer.Stop();
             SendCommandToOverlay("hide"); // Ensure overlay is hidden when service stops
-            eventLog1.WriteEntry("Service stopped.");
+            _eventLog.WriteEntry("Service stopped.");
         }
 
         private void CheckPortUsage(int port)
@@ -69,7 +102,7 @@ namespace VNCOverlay
             }
             catch (Exception ex)
             {
-                eventLog1.WriteEntry("Error running netstat: " + ex.Message, EventLogEntryType.Error);
+                _eventLog.WriteEntry("Error running netstat: " + ex.Message, EventLogEntryType.Error);
             }
         }
 
@@ -123,11 +156,11 @@ namespace VNCOverlay
                 }
                 catch (System.TimeoutException tex)
                 {
-                    eventLog1.WriteEntry($"Connection timeout: {tex.Message}", EventLogEntryType.Error);
+                    _eventLog.WriteEntry($"Connection timeout: {tex.Message}", EventLogEntryType.Error);
                 }
                 catch (Exception ex)
                 {
-                    eventLog1.WriteEntry($"Failed to send command '{command}' to overlay: {ex.Message}", EventLogEntryType.Error);
+                    _eventLog.WriteEntry($"Failed to send command '{command}' to overlay: {ex.Message}", EventLogEntryType.Error);
                 }
             }
         }
