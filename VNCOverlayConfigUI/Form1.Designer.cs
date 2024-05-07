@@ -44,7 +44,7 @@
             btnSave.TabIndex = 0;
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = true;
-            btnSave.Click += buttonSave_Click;
+            btnSave.Click += btnSave_Click;
             // 
             // btnStartService
             // 
@@ -54,7 +54,7 @@
             btnStartService.TabIndex = 1;
             btnStartService.Text = "Start";
             btnStartService.UseVisualStyleBackColor = true;
-            btnStartService.Click += buttonStartService_Click;
+            btnStartService.Click += btnStartService_Click;
             // 
             // txtPortNumber
             // 
@@ -62,6 +62,7 @@
             txtPortNumber.Name = "txtPortNumber";
             txtPortNumber.Size = new Size(100, 23);
             txtPortNumber.TabIndex = 2;
+            txtPortNumber.TextChanged += txtPortNumber_TextChanged;
             // 
             // btnStopService
             // 
@@ -71,7 +72,7 @@
             btnStopService.TabIndex = 3;
             btnStopService.Text = "Stop";
             btnStopService.UseVisualStyleBackColor = true;
-            btnStopService.Click += buttonStopService_Click;
+            btnStopService.Click += btnStopService_Click;
             // 
             // lblStatus
             // 
@@ -89,7 +90,7 @@
             btnRestartService.TabIndex = 5;
             btnRestartService.Text = "Restart";
             btnRestartService.UseVisualStyleBackColor = true;
-            btnRestartService.Click += buttonRestartService_Click;
+            btnRestartService.Click += btnRestartService_Click;
             // 
             // Form1
             // 
@@ -106,7 +107,7 @@
             Text = "VNCOverlay Config";
             ResumeLayout(false);
             PerformLayout();
-        }
+        }       
 
         #endregion
 

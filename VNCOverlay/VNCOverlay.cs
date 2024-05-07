@@ -5,6 +5,7 @@ using System.IO.Pipes;
 using System.ServiceProcess;
 using System.Timers;
 using System.Configuration;
+using System.Collections.Generic;
 
 namespace VNCOverlay
 {
@@ -13,12 +14,12 @@ namespace VNCOverlay
         private EventLog _eventLog;
         private Timer checkPortTimer;
         private bool isOverlayVisible = false;
-        private int portNumber;
+        private List<int> ports = new List<int>();
 
         public VNCOverlay()
         {
             InitializeComponent();
-            Debugger.Launch();
+            //Debugger.Launch();
 
             if (!EventLog.SourceExists("VNCOverlay"))
             {
@@ -42,29 +43,35 @@ namespace VNCOverlay
             _eventLog.Log = "VNCOverlayLog";
             _eventLog.WriteEntry("Your log message here", EventLogEntryType.Information);
 
-            // Try to read the port number from the configuration file
+            // Try to read the port number from the configuration file        
             try
             {
-                string portValue = ConfigurationManager.AppSettings["PortNumber"];
-                if (!int.TryParse(portValue, out portNumber))
+                string portsValue = ConfigurationManager.AppSettings["PortNumber"];
+                foreach (var port in portsValue.Split(','))
                 {
-                    // If parsing fails or the value is null, set to default
-                    portNumber = 5900; // Set your desired default port number
-                    _eventLog.WriteEntry($"Failed to read 'PortNumber' from app.config. Using default port {portNumber}.", EventLogEntryType.Warning);
-                }
+                    if (int.TryParse(port.Trim(), out int portNumber)) 
+                    { 
+                        ports.Add(portNumber);                    
+                    }
+                    else
+                    {
+                        ports.Add(5900);
+                        _eventLog.WriteEntry($"Failed to read 'PortNumber' from app.config. Using default port {portNumber}.", EventLogEntryType.Warning);
+                    }
+                }               
             }
             catch (Exception ex)
             {
-                portNumber = 5900; // Set your desired default port number
-                _eventLog.WriteEntry($"Error reading 'PortNumber' from app.config. Using default port {portNumber}. Exception: {ex.Message}", EventLogEntryType.Error);
+                ports.Add(5900); // Set your desired default port number
+                _eventLog.WriteEntry($"Error reading 'PortNumber' from app.config. Using default port. Exception: {ex.Message}", EventLogEntryType.Error);
             }
 
             checkPortTimer = new Timer(10000); // Set the interval to 10 seconds (10000 milliseconds)
-            checkPortTimer.Elapsed += (sender, e) => CheckPortUsage(portNumber); // Replace 12345 with your port
+            checkPortTimer.Elapsed += (sender, e) => CheckPortUsage(); // Replace 12345 with your port
             checkPortTimer.AutoReset = true;
             checkPortTimer.Enabled = true;
 
-            _eventLog.WriteEntry("Service started and monitoring port.");
+            _eventLog.WriteEntry($"Service started and monitoring using ports {ports}.");
         }
 
         protected override void OnStart(string[] args)
@@ -80,7 +87,7 @@ namespace VNCOverlay
             _eventLog.WriteEntry("Service stopped.");
         }
 
-        private void CheckPortUsage(int port)
+        private void CheckPortUsage()
         {
             try
             {
@@ -96,7 +103,11 @@ namespace VNCOverlay
                     using (StreamReader reader = process.StandardOutput)
                     {
                         string result = reader.ReadToEnd();
-                        FindPortInNetstatOutput(result, port);
+                        //FindPortInNetstatOutput(result, port);
+                        foreach (var port in ports)
+                        {
+                            FindPortInNetstatOutput(result, port);
+                        }
                     }
                 }
             }
@@ -123,8 +134,25 @@ namespace VNCOverlay
                     }
                 }
             }
+            ManageOverlayVisibility(isPortInUse);
 
+            /*
             // Use named pipe communication to control the overlay visibility
+            if (isPortInUse && !isOverlayVisible)
+            {
+                SendCommandToOverlay("show");
+                isOverlayVisible = true;
+            }
+            else if (!isPortInUse && isOverlayVisible)
+            {
+                SendCommandToOverlay("hide");
+                isOverlayVisible = false;
+            }
+            */
+        }
+
+        private void ManageOverlayVisibility(bool isPortInUse)
+        {
             if (isPortInUse && !isOverlayVisible)
             {
                 SendCommandToOverlay("show");
