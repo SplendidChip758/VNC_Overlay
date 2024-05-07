@@ -80,7 +80,6 @@
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(237, 27);
             lblStatus.TabIndex = 4;
-            lblStatus.Text = "label1";
             // 
             // btnRestartService
             // 
@@ -104,7 +103,7 @@
             Controls.Add(btnStartService);
             Controls.Add(btnSave);
             Name = "Form1";
-            Text = "Form1";
+            Text = "VNCOverlay Config";
             ResumeLayout(false);
             PerformLayout();
         }
