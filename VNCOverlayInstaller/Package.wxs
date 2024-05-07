@@ -7,6 +7,9 @@
 		<ComponentRef Id="WPFApp" />
 		<ComponentRef Id="WindowsFrom"/>
         <ComponentRef Id="WindowsService" />
+		<ComponentRef Id="ConfigUIShortcut"/>
+		<ComponentRef Id="RemoveApplicationProgramsFolder" />
+		<ComponentRef Id="CleanupFiles"/>
 		
     </Feature>
 
