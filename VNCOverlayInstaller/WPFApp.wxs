@@ -3,7 +3,7 @@
   <Fragment>
 	  <Component Id="WPFApp" Guid="*">
 		  <File Id="WPFAppEXE" Source="E:\source\repos\VNCOverlay\VNCOverlayUI\bin\Release\VNCOverlayUI.exe" KeyPath="yes" Checksum="yes"/>
-		  
+		  <File Id="WPFAppConfig" Source="E:\source\repos\VNCOverlay\VNCOverlayUI\bin\Release\VNCOverlayUI.exe.config"/>
 		  <RegistryKey Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Run" ForceDeleteOnUninstall="yes">
 			  <RegistryValue Type="string" Name="VNCOverlayUI" Value="&quot;[INSTALLFOLDER]VNCOverlayUI.exe&quot;" />
 		  </RegistryKey>

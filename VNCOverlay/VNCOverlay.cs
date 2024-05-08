@@ -41,7 +41,7 @@ namespace VNCOverlay
             _eventLog = new EventLog();
             _eventLog.Source = "VNCOverlay";
             _eventLog.Log = "VNCOverlayLog";
-            _eventLog.WriteEntry("Your log message here", EventLogEntryType.Information);
+            //_eventLog.WriteEntry("Your log message here", EventLogEntryType.Information);
 
             // Try to read the port number from the configuration file        
             try
@@ -71,7 +71,7 @@ namespace VNCOverlay
             checkPortTimer.AutoReset = true;
             checkPortTimer.Enabled = true;
 
-            _eventLog.WriteEntry($"Service started and monitoring using ports {ports}.");
+            _eventLog.WriteEntry($"Service started and monitoring using ports {string.Join(", ", ports)}.");
         }
 
         protected override void OnStart(string[] args)
