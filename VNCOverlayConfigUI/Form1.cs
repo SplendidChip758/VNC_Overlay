@@ -2,6 +2,7 @@ using System.Configuration;
 using System.ServiceProcess;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace VNCOverlayConfigUI
 {
@@ -68,12 +69,12 @@ namespace VNCOverlayConfigUI
 
         private void btnStopService_Click(object sender, EventArgs e)
         {
-            ControlService("stop");           
+            ControlService("stop");
         }
 
         private void btnRestartService_Click(object sender, EventArgs e)
         {
-            ControlService("restart");           
+            ControlService("restart");
         }
 
         private void ControlService(string command)
@@ -119,5 +120,75 @@ namespace VNCOverlayConfigUI
             }
         }
 
+        private void btnOverlayBasic_Click(object sender, EventArgs e)
+        {
+            StopOverlayUI();
+            UpdateOverlay("OverlayBasic");
+            StopOverlayUI();
+        }
+
+        private void btnOverlayLoud_Click(object sender, EventArgs e)
+        {
+            StopOverlayUI();
+            UpdateOverlay("OverlayLoud");
+            StopOverlayUI();
+        }
+
+        private void UpdateOverlay(string window)
+        {
+            // Properly locate the service's configuration file assuming it is in the same directory
+#if DEBUG
+            string exePath = Path.Combine("C:\\Program Files\\SplendidChip758 VNCOverlay", "VNCOverlayUI.exe");
+#else
+            string exePath = Path.Combine(Application.StartupPath, "VNCOverlayUI.exe");
+#endif
+
+            Configuration config = ConfigurationManager.OpenExeConfiguration(exePath);
+            if (config.AppSettings.Settings["Overlay"] != null)
+            {
+                config.AppSettings.Settings["Overlay"].Value = window;
+            }
+            else
+            {
+                config.AppSettings.Settings.Add("Overlay", window);
+            }
+            config.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection("appSettings");
+
+
+            lblStatus.Text = "overlay updated";
+        }
+
+        private void StartOverlayUI()
+        {
+            string exePath = Path.Combine("C:\\Program Files\\SplendidChip758 VNCOverlay", "VNCOverlayUI.exe");
+
+            // Start the application again
+            try
+            {
+                Process.Start(exePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error starting application: " + ex.Message);
+            }
+        }
+
+        private void StopOverlayUI ()
+        {
+            // Try to find and kill the existing process
+            foreach (var process in Process.GetProcessesByName("VNCOverlayUI"))
+            {
+                try
+                {
+                    process.Kill();
+                    process.WaitForExit(); // Optional: Wait for the process to exit
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error stopping application: " + ex.Message);
+                }
+            }
+        }
     }
 }

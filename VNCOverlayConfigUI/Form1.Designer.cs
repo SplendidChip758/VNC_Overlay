@@ -34,6 +34,8 @@
             btnStopService = new Button();
             lblStatus = new Label();
             btnRestartService = new Button();
+            btnOverlayBasic = new Button();
+            btnOverlayLoud = new Button();
             SuspendLayout();
             // 
             // btnSave
@@ -92,11 +94,35 @@
             btnRestartService.UseVisualStyleBackColor = true;
             btnRestartService.Click += btnRestartService_Click;
             // 
+            // btnOverlayBasic
+            // 
+            btnOverlayBasic.BackgroundImage = Properties.Resources.overlayBasicPreview;
+            btnOverlayBasic.BackgroundImageLayout = ImageLayout.Zoom;
+            btnOverlayBasic.Location = new Point(255, 12);
+            btnOverlayBasic.Name = "btnOverlayBasic";
+            btnOverlayBasic.Size = new Size(72, 64);
+            btnOverlayBasic.TabIndex = 6;
+            btnOverlayBasic.UseVisualStyleBackColor = true;
+            btnOverlayBasic.Click += btnOverlayBasic_Click;
+            // 
+            // btnOverlayLoud
+            // 
+            btnOverlayLoud.BackgroundImage = Properties.Resources.overlayLoudPreview;
+            btnOverlayLoud.BackgroundImageLayout = ImageLayout.Zoom;
+            btnOverlayLoud.Location = new Point(333, 12);
+            btnOverlayLoud.Name = "btnOverlayLoud";
+            btnOverlayLoud.Size = new Size(72, 64);
+            btnOverlayLoud.TabIndex = 7;
+            btnOverlayLoud.UseVisualStyleBackColor = true;
+            btnOverlayLoud.Click += btnOverlayLoud_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(264, 110);
+            ClientSize = new Size(462, 110);
+            Controls.Add(btnOverlayLoud);
+            Controls.Add(btnOverlayBasic);
             Controls.Add(btnRestartService);
             Controls.Add(lblStatus);
             Controls.Add(btnStopService);
@@ -107,7 +133,7 @@
             Text = "VNCOverlay Config";
             ResumeLayout(false);
             PerformLayout();
-        }       
+        }
 
         #endregion
 
@@ -117,5 +143,7 @@
         private Button btnStopService;
         private Label lblStatus;
         private Button btnRestartService;
+        private Button btnOverlayBasic;
+        private Button btnOverlayLoud;
     }
 }
