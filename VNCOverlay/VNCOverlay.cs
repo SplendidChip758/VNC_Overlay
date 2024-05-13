@@ -6,6 +6,9 @@ using System.ServiceProcess;
 using System.Timers;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace VNCOverlay
 {
@@ -76,6 +79,7 @@ namespace VNCOverlay
 
         protected override void OnStart(string[] args)
         {
+            StartStatusListener();
             checkPortTimer.Start();
             _eventLog.WriteEntry("Service started and is now monitoring port.");
         }
@@ -86,6 +90,41 @@ namespace VNCOverlay
             SendCommandToOverlay("hide"); // Ensure overlay is hidden when service stops
             _eventLog.WriteEntry("Service stopped.");
         }
+
+        private async void StartStatusListener()
+        {
+            var pipeSecurity = new PipeSecurity();
+            var sid = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
+            pipeSecurity.AddAccessRule(new PipeAccessRule(sid, PipeAccessRights.ReadWrite, AccessControlType.Allow));
+
+            while (true)
+            {
+                try
+                {
+                    using (var server = new NamedPipeServerStream("VNCOverlayStatusPipe", PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 0, 0, pipeSecurity))
+                    {
+                        await Task.Factory.FromAsync(server.BeginWaitForConnection, server.EndWaitForConnection, null);
+                        using (var reader = new StreamReader(server))
+                        {
+                            string status;
+                            while ((status = await reader.ReadLineAsync()) != null)
+                            {
+                                isOverlayVisible = (status == "visible");
+                                _eventLog.WriteEntry($"Overlay visibility updated: {status}");
+                            }
+                        }
+                        server.Disconnect();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log the error
+                    _eventLog.WriteEntry($"Error listening for overlay status: {ex.Message}", EventLogEntryType.Error);               
+                    // Optional: Decide whether to retry connection, pause, or handle the error differently
+                }
+            }
+        }
+
 
         private void CheckPortUsage()
         {
@@ -134,35 +173,19 @@ namespace VNCOverlay
                     }
                 }
             }
-            ManageOverlayVisibility(isPortInUse);
-
-            /*
-            // Use named pipe communication to control the overlay visibility
-            if (isPortInUse && !isOverlayVisible)
-            {
-                SendCommandToOverlay("show");
-                isOverlayVisible = true;
-            }
-            else if (!isPortInUse && isOverlayVisible)
-            {
-                SendCommandToOverlay("hide");
-                isOverlayVisible = false;
-            }
-            */
+            ManageOverlayVisibility(isPortInUse);          
         }
 
         private void ManageOverlayVisibility(bool isPortInUse)
         {
             if (isPortInUse && !isOverlayVisible)
             {
-                SendCommandToOverlay("show");
-                isOverlayVisible = true;
+                SendCommandToOverlay("show");            
             }
             else if (!isPortInUse && isOverlayVisible)
             {
-                SendCommandToOverlay("hide");
-                isOverlayVisible = false;
-            }
+                SendCommandToOverlay("hide");              
+            }          
         }
 
         private void SendCommandToOverlay(string command)
@@ -171,10 +194,7 @@ namespace VNCOverlay
             {
                 try
                 {
-                    if (!client.IsConnected)
-                    {
-                        client.Connect(5000); // Wait 5000 milliseconds to connect
-                    }
+                    client.Connect(5000); // Wait 5000 milliseconds to connect
 
                     using (var writer = new StreamWriter(client))
                     {

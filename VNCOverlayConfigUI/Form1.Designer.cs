@@ -36,6 +36,7 @@
             btnRestartService = new Button();
             btnOverlayBasic = new Button();
             btnOverlayLoud = new Button();
+            btnOverlayCenter = new Button();
             SuspendLayout();
             // 
             // btnSave
@@ -116,11 +117,23 @@
             btnOverlayLoud.UseVisualStyleBackColor = true;
             btnOverlayLoud.Click += btnOverlayLoud_Click;
             // 
+            // btnOverlayCenter
+            // 
+            btnOverlayCenter.BackgroundImage = Properties.Resources.overlayCenterPreview;
+            btnOverlayCenter.BackgroundImageLayout = ImageLayout.Zoom;
+            btnOverlayCenter.Location = new Point(411, 12);
+            btnOverlayCenter.Name = "btnOverlayCenter";
+            btnOverlayCenter.Size = new Size(72, 64);
+            btnOverlayCenter.TabIndex = 8;
+            btnOverlayCenter.UseVisualStyleBackColor = true;
+            btnOverlayCenter.Click += btnOverlayCenter_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(462, 110);
+            ClientSize = new Size(495, 106);
+            Controls.Add(btnOverlayCenter);
             Controls.Add(btnOverlayLoud);
             Controls.Add(btnOverlayBasic);
             Controls.Add(btnRestartService);
@@ -145,5 +158,6 @@
         private Button btnRestartService;
         private Button btnOverlayBasic;
         private Button btnOverlayLoud;
+        private Button btnOverlayCenter;
     }
 }

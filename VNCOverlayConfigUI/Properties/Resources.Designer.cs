@@ -73,6 +73,16 @@ namespace VNCOverlayConfigUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap overlayCenterPreview {
+            get {
+                object obj = ResourceManager.GetObject("overlayCenterPreview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap overlayLoudPreview {
             get {
                 object obj = ResourceManager.GetObject("overlayLoudPreview", resourceCulture);

@@ -121,6 +121,9 @@
   <data name="overlayBasicPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\IMG\overlayBasicPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="overlayCenterPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\IMG\overlayCenterPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="overlayLoudPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\IMG\overlayLoudPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

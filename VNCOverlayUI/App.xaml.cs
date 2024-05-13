@@ -23,7 +23,7 @@ namespace VNCOverlayUI
             base.OnStartup(e);
 
             // Initialize the set window but do not show it immediately.
-            ConfigureInitialOverlay();
+            ConfigureOverlay();
 #if BITMAP
             currentOverlay.Show();
             CaptureAndSaveVisual(currentOverlay, "overlayPreview.png");
@@ -33,33 +33,6 @@ namespace VNCOverlayUI
             StartPipeServer();
 #endif
         }
-
-        //public void CaptureAndSaveVisual(Window window, string filename)
-        //{
-        //    try
-        //    {
-        //        // Define the RenderTargetBitmap (width, height, dpiX, dpiY, PixelFormat)
-        //        RenderTargetBitmap renderTarget = new RenderTargetBitmap(
-        //            (int)window.Width, (int)window.Height, 96, 96, PixelFormats.Pbgra32);
-
-        //        // Render the visual (window) to the RenderTargetBitmap
-        //        renderTarget.Render(window);
-
-        //        // Encode the image to a PNG (could be JPEG or other formats)
-        //        PngBitmapEncoder encoder = new PngBitmapEncoder();
-        //        encoder.Frames.Add(BitmapFrame.Create(renderTarget));
-
-        //        // Save the image to a file
-        //        using (FileStream file = File.Create(filename))
-        //        {
-        //            encoder.Save(file);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Error capturing screen: " + ex.Message);
-        //    }
-        //}
 
         public void CaptureAndSaveVisual(Window window, string filename)
         {
@@ -110,8 +83,9 @@ namespace VNCOverlayUI
             }
         }
 
-        private void ConfigureInitialOverlay()
+        private void ConfigureOverlay()
         {
+            ConfigurationManager.RefreshSection("appSettings");
             string defaultOverlay = ConfigurationManager.AppSettings["Overlay"];
             switch (defaultOverlay)
             {
@@ -119,10 +93,13 @@ namespace VNCOverlayUI
                     currentOverlay = new MainOverlay();
                     break;
                 case "OverlayBasic":
-                    currentOverlay = new OverlayBasic(); // Assuming OverlayBasic is another Window
+                    currentOverlay = new OverlayBasic();
                     break;
                 case "OverlayLoud":
                     currentOverlay = new OverlayLoud();
+                    break;
+                case "OverlayCenter":
+                    currentOverlay = new OverlayCenter();
                     break;
                 default:
                     currentOverlay = new MainOverlay(); // Fallback to MainWindow
@@ -179,6 +156,14 @@ namespace VNCOverlayUI
                         HideCurrentOverlay();
                     });
                     break;
+                case "update":
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        HideCurrentOverlay();
+                        ConfigureOverlay();
+                        ShowCurrentOverlay();
+                    });
+                    break;
             }
         }
 
@@ -189,6 +174,7 @@ namespace VNCOverlayUI
             {
                 currentOverlay?.Show();
                 currentOverlay?.Activate(); // Bring window to front
+                SendVisibilityStatus(true);
             });
         }
 
@@ -197,7 +183,31 @@ namespace VNCOverlayUI
             Dispatcher.Invoke(() =>
             {
                 currentOverlay?.Hide();
+                SendVisibilityStatus(false);
             });
         }
+
+        private void SendVisibilityStatus(bool isVisible)
+        {
+            using (var client = new NamedPipeClientStream(".", "VNCOverlayStatusPipe", PipeDirection.Out))
+            {
+                try
+                {
+                    client.Connect(1000);  // Shorter timeout for status updates
+
+                    using (var writer = new StreamWriter(client))
+                    {
+                        writer.WriteLine(isVisible ? "visible" : "hidden");
+                        writer.Flush();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions (e.g., logging)
+                    Console.WriteLine($"Failed to send visibility status: {ex.Message}");
+                }
+            }
+        }
+
     }
 }

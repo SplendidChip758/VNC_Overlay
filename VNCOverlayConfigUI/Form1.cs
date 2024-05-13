@@ -3,18 +3,41 @@ using System.ServiceProcess;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.IO.Pipes;
 
 namespace VNCOverlayConfigUI
 {
     public partial class Form1 : Form
     {
-
         private ErrorProvider errorProvider = new ErrorProvider();
+        private EventLog _eventLog;
 
         public Form1()
         {
             InitializeComponent();
             errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink; // Optional: set blink behavior
+
+            if (!EventLog.SourceExists("VNCOverlayConfig"))
+            {
+                // Create the source if it does not exist.
+                EventLog.CreateEventSource("VNCOverlayConfig", "VNCOverlayLog");
+            }
+            else
+            {
+                // Check which log it is registered to
+                string logName = EventLog.LogNameFromSourceName("VNCOverlayConfig", ".");
+                if (logName != "VNCOverlayLog")
+                {
+                    // Delete and recreate the source if registered incorrectly
+                    EventLog.DeleteEventSource("VNCOverlayConfig");
+                    EventLog.CreateEventSource("VNCOverlayConfig", "VNCOverlayLog");
+                }
+            }
+
+            _eventLog = new EventLog();
+            _eventLog.Source = "VNCOverlayConfig";
+            _eventLog.Log = "VNCOverlayLog";
+            _eventLog.WriteEntry("its working");
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -43,7 +66,7 @@ namespace VNCOverlayConfigUI
         {
             // Properly locate the service's configuration file assuming it is in the same directory
 #if DEBUG
-            string exePath = Path.Combine("C:\\Program Files\\SplendidChip758 VNCOverlay", "VNCOverlay.exe");
+            string exePath = Path.Combine("E:\\source\\repos\\VNCOverlay\\VNCOverlay\\bin\\Release", "VNCOverlay.exe");
 #else
             string exePath = Path.Combine(Application.StartupPath, "VNCOverlay.exe");
 #endif
@@ -122,23 +145,33 @@ namespace VNCOverlayConfigUI
 
         private void btnOverlayBasic_Click(object sender, EventArgs e)
         {
-            StopOverlayUI();
+            //StopOverlayUI();
             UpdateOverlay("OverlayBasic");
-            StopOverlayUI();
+            //StartOverlayUI();
+            SendCommandToOverlay("update");
         }
 
         private void btnOverlayLoud_Click(object sender, EventArgs e)
         {
-            StopOverlayUI();
+            //StopOverlayUI();
             UpdateOverlay("OverlayLoud");
-            StopOverlayUI();
+            //StartOverlayUI();
+            SendCommandToOverlay("update");
+        }
+
+        private void btnOverlayCenter_Click(object sender, EventArgs e)
+        {
+            //StopOverlayUI();
+            UpdateOverlay("OverlayCenter");
+            //StartOverlayUI();
+            SendCommandToOverlay("update");
         }
 
         private void UpdateOverlay(string window)
         {
             // Properly locate the service's configuration file assuming it is in the same directory
 #if DEBUG
-            string exePath = Path.Combine("C:\\Program Files\\SplendidChip758 VNCOverlay", "VNCOverlayUI.exe");
+            string exePath = Path.Combine("E:\\source\\repos\\VNCOverlay\\VNCOverlayUI\\bin\\Debug", "VNCOverlayUI.exe");
 #else
             string exePath = Path.Combine(Application.StartupPath, "VNCOverlayUI.exe");
 #endif
@@ -159,34 +192,30 @@ namespace VNCOverlayConfigUI
             lblStatus.Text = "overlay updated";
         }
 
-        private void StartOverlayUI()
+        private void SendCommandToOverlay(string command)
         {
-            string exePath = Path.Combine("C:\\Program Files\\SplendidChip758 VNCOverlay", "VNCOverlayUI.exe");
-
-            // Start the application again
-            try
-            {
-                Process.Start(exePath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error starting application: " + ex.Message);
-            }
-        }
-
-        private void StopOverlayUI ()
-        {
-            // Try to find and kill the existing process
-            foreach (var process in Process.GetProcessesByName("VNCOverlayUI"))
+            using (var client = new NamedPipeClientStream(".", "VNCOverlayPipe", PipeDirection.Out))
             {
                 try
                 {
-                    process.Kill();
-                    process.WaitForExit(); // Optional: Wait for the process to exit
+                    if (!client.IsConnected)
+                    {
+                        client.Connect(5000); // Wait 5000 milliseconds to connect
+                    }
+
+                    using (var writer = new StreamWriter(client))
+                    {
+                        writer.WriteLine(command);
+                        writer.Flush();
+                    }
+                }
+                catch (System.TimeoutException tex)
+                {
+                    _eventLog.WriteEntry($"Connection timeout: {tex.Message}", EventLogEntryType.Error);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error stopping application: " + ex.Message);
+                    _eventLog.WriteEntry($"Failed to send command '{command}' to overlay: {ex.Message}", EventLogEntryType.Error);
                 }
             }
         }

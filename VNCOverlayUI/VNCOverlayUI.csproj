@@ -97,6 +97,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="OverlayCenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="OverlayLoud.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -105,6 +109,9 @@
   <ItemGroup>
     <Compile Include="OverlayBasic.xaml.cs">
       <DependentUpon>OverlayBasic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OverlayCenter.xaml.cs">
+      <DependentUpon>OverlayCenter.xaml</DependentUpon>
     </Compile>
     <Compile Include="OverlayLoud.xaml.cs">
       <DependentUpon>OverlayLoud.xaml</DependentUpon>
