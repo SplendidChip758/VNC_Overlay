@@ -16,7 +16,7 @@ Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "VNCOverlayInstaller", "VNCO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VNCOverlayConfigUI", "VNCOverlayConfigUI\VNCOverlayConfigUI.csproj", "{3E6E3675-4E3D-4267-B29A-7B422A84CD40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VNCOverlayWorkerService", "VNCOverlayWorkerService\VNCOverlayWorkerService.csproj", "{68AAAD01-34A6-4C25-A35F-A4EA80892766}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VNCOverlayWorkerService", "VNCOverlayWorkerService\VNCOverlayWorkerService.csproj", "{68AAAD01-34A6-4C25-A35F-A4EA80892766}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

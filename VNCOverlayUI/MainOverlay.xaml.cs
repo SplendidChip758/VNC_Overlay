@@ -37,5 +37,34 @@ namespace VNCOverlayUI
             int extendedStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
             SetWindowLong(hwnd, GWL_EXSTYLE, extendedStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
         }
+
+        public void ShowOverlayMain()
+        {
+            OverlayMain.Visibility = Visibility.Visible;
+            OverlayBasic.Visibility = Visibility.Collapsed;
+            OverlayCenter.Visibility = Visibility.Collapsed;
+            OverlayLoud.Visibility = Visibility.Collapsed;
+        }
+        public void ShowOverlayBasic()
+        {
+            OverlayBasic.Visibility = Visibility.Visible;
+            OverlayMain.Visibility = Visibility.Collapsed;
+            OverlayCenter.Visibility = Visibility.Collapsed;
+            OverlayLoud.Visibility = Visibility.Collapsed;
+        }
+        public void ShowOverlayCenter()
+        {
+            OverlayCenter.Visibility = Visibility.Visible;
+            OverlayMain.Visibility = Visibility.Collapsed;
+            OverlayBasic.Visibility = Visibility.Collapsed;
+            OverlayLoud.Visibility = Visibility.Collapsed;
+        }
+        public void ShowOverlayLoud()
+        {
+            OverlayLoud.Visibility = Visibility.Visible;
+            OverlayMain.Visibility = Visibility.Collapsed;
+            OverlayBasic.Visibility = Visibility.Collapsed;
+            OverlayCenter.Visibility = Visibility.Collapsed;
+        }
     }
 }

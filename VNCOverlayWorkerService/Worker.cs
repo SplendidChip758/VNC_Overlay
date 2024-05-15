@@ -11,6 +11,8 @@ namespace VNCOverlayWorkerService
         private EventLog _eventLog;
         private List<int> ports = new List<int>();
         private NamedPipeServer _pipeServer;
+        public HashSet<int> _activeConnections;
+        private bool _overlayVisible;
 
         private const string EventLogSource = "VNCOverlay";
         private const string EventLogName = "VNCOverlayLog";
@@ -19,12 +21,13 @@ namespace VNCOverlayWorkerService
         {
             _logger = logger;
             _configuration = configuration;
+            _activeConnections = new HashSet<int>();
 
             InitializeEventLog();
             InitializePorts();
 
-            _pipeServer = new NamedPipeServer("VNCOverlayPipe", logger);
-
+            _pipeServer = new NamedPipeServer("OverlayPipe", "StatusPipe", logger, _eventLog, HandleStatus);
+            StartPipeServer();
         }
 
         private void InitializeEventLog()
@@ -77,6 +80,25 @@ namespace VNCOverlayWorkerService
             }
         }
 
+        private async void StartPipeServer()
+        {
+            await _pipeServer.ReceiveStatusAsync();
+        }
+
+        private void HandleStatus(string status)
+        {
+            switch (status.ToLower())
+            {
+                case "visible":
+                    _overlayVisible = true;
+                    break;
+                case "hidden":
+                    _overlayVisible = false;
+                    break;
+                case ""
+            }
+        }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
@@ -92,8 +114,25 @@ namespace VNCOverlayWorkerService
 
                     foreach (var conn in establishedConnections)
                     {
-                        _logger.LogInformation($"Established connection found on port {conn.LocalEndPoint.Port} at: {DateTimeOffset.Now}");
-                        _eventLog.WriteEntry($"Established connection found on port {conn.LocalEndPoint.Port} at: {DateTimeOffset.Now}", EventLogEntryType.Information);
+                        if (_activeConnections.Add(conn.LocalEndPoint.Port))
+                        {
+                            _logger.LogInformation($"Established connection found on port {conn.LocalEndPoint.Port} at: {DateTimeOffset.Now}");
+                            _eventLog.WriteEntry($"Established connection found on port {conn.LocalEndPoint.Port} at: {DateTimeOffset.Now}", EventLogEntryType.Information);
+
+                            if (!_overlayVisible)
+                            {
+                                await _pipeServer.SendCommandAsync("Show");
+                            }                           
+                        }
+                    }
+
+                    // Remove connections that are no longer established
+                    _activeConnections.RemoveWhere(port => !establishedConnections.Any(conn => conn.LocalEndPoint.Port == port));
+
+                    // If no active connections, send "Hide" command
+                    if (_activeConnections.Count == 0 && _overlayVisible)
+                    {
+                        await _pipeServer.SendCommandAsync("Hide");
                     }
 
                     await Task.Delay(1000, stoppingToken);
@@ -104,6 +143,6 @@ namespace VNCOverlayWorkerService
                     _eventLog.WriteEntry($"An error occurred: {ex.Message}", EventLogEntryType.Error);
                 }            
             }
-        }
+        }    
     }
 }
