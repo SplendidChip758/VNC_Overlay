@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Net.NetworkInformation;
-using System.IO.Pipes;
 
 namespace VNCOverlayWorkerService
 {
@@ -9,8 +8,7 @@ namespace VNCOverlayWorkerService
         private readonly ILogger<Worker> _logger;
         private readonly IConfiguration _configuration;
         private EventLog _eventLog;
-        private List<int> ports = new List<int>();
-        private NamedPipeServer _pipeServer;
+        private List<int> ports = new List<int>();       
         public HashSet<int> _activeConnections;
         private bool _overlayVisible;
 
@@ -25,9 +23,6 @@ namespace VNCOverlayWorkerService
 
             InitializeEventLog();
             InitializePorts();
-
-            _pipeServer = new NamedPipeServer("OverlayPipe", "StatusPipe", logger, _eventLog, HandleStatus);
-            StartPipeServer();
         }
 
         private void InitializeEventLog()
@@ -80,25 +75,6 @@ namespace VNCOverlayWorkerService
             }
         }
 
-        private async void StartPipeServer()
-        {
-            await _pipeServer.ReceiveStatusAsync();
-        }
-
-        private void HandleStatus(string status)
-        {
-            switch (status.ToLower())
-            {
-                case "visible":
-                    _overlayVisible = true;
-                    break;
-                case "hidden":
-                    _overlayVisible = false;
-                    break;
-                case ""
-            }
-        }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
@@ -121,7 +97,7 @@ namespace VNCOverlayWorkerService
 
                             if (!_overlayVisible)
                             {
-                                await _pipeServer.SendCommandAsync("Show");
+                                
                             }                           
                         }
                     }
@@ -132,7 +108,7 @@ namespace VNCOverlayWorkerService
                     // If no active connections, send "Hide" command
                     if (_activeConnections.Count == 0 && _overlayVisible)
                     {
-                        await _pipeServer.SendCommandAsync("Hide");
+                        
                     }
 
                     await Task.Delay(1000, stoppingToken);

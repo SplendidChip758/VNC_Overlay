@@ -1,0 +1,33 @@
+﻿<Window x:Class="VNCOverlay.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VNCOverlay"
+        mc:Ignorable="d"
+        Title="Overlay Settings" Height="225" Width="400">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="BorderBrush" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <TextBox x:Name="PortNumberTxt" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="PortNumberTxt_TextChanged">
+            <TextBox.Text>
+                <Binding Path="PortNumber" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
+                    <Binding.ValidationRules>
+                        <local:PortNumberValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Button x:Name="SaveBtn" Content="Save" HorizontalAlignment="Left" Margin="135,9,0,0" VerticalAlignment="Top" Click="SaveBtn_Click"/>
+    </Grid>
+</Window>
+

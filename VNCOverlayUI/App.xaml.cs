@@ -96,8 +96,7 @@ namespace VNCOverlayUI
             Dispatcher.Invoke(() =>
             {
                 _overlayWindow.Show();
-                _overlayWindow.Activate(); // Bring window to front
-                await new SeanWasHere();
+                _overlayWindow.Activate(); // Bring window to front              
                 _pipeServer.SendStatusAsync("Visible");
             });
         }
