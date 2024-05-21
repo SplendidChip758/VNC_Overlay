@@ -46,9 +46,9 @@ namespace VNCOverlay
             SetWindowLong(hwnd, GWL_EXSTYLE, extendedStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
         }
 
-        public void ShowOverlayMain()
+        public void HideOverlays()
         {
-            OverlayMain.Visibility = Visibility.Visible;
+            OverlayMain.Visibility = Visibility.Collapsed;
             OverlayBasic.Visibility = Visibility.Collapsed;
             OverlayCenter.Visibility = Visibility.Collapsed;
             OverlayLoud.Visibility = Visibility.Collapsed;

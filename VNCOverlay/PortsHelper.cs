@@ -57,6 +57,7 @@ namespace VNCOverlay
                 _logger.LogError(ex, "Error reading 'PortNumber' from configuration. Using default port 5900.");
             }
         }
+
         public void UpdatePorts(string portsText)
         {
             _ports.Clear();
@@ -77,6 +78,7 @@ namespace VNCOverlay
                     }
                 }
                 _logger.LogInformation("Ports Updated successfully.");
+                SavePorts();
             }
             catch (Exception ex)
             {
@@ -85,23 +87,31 @@ namespace VNCOverlay
         }
 
         public void SavePorts()
-        {           
-            // Assuming you have a method to update the configuration
-            string portsValue = string.Join(",", _ports);
-            // Update your configuration file with the new portsValue
-            Configuration config = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            if (config.AppSettings.Settings["PortNumber"] != null)
+        {
+            try
             {
-                config.AppSettings.Settings["PortNumber"].Value = portsValue;
-            }
-            else
-            {
-                config.AppSettings.Settings.Add("PortNumber", portsValue);
-            }
-            config.Save(ConfigurationSaveMode.Modified);
-            System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+                // Assuming you have a method to update the configuration
+                string portsValue = string.Join(",", _ports);
+                // Update your configuration file with the new portsValue
+                Configuration config = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                if (config.AppSettings.Settings["PortNumber"] != null)
+                {
+                    config.AppSettings.Settings["PortNumber"].Value = portsValue;
+                }
+                else
+                {
+                    config.AppSettings.Settings.Add("PortNumber", portsValue);
+                }
+                config.Save(ConfigurationSaveMode.Modified);
+                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
 
-            _logger.LogInformation("Port saved successfully.");
+                _logger.LogInformation("Port saved successfully.");
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error Saving ports");
+            }
         }
     }
 }

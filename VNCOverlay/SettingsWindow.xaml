@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VNCOverlay"
         mc:Ignorable="d"
-        Title="Overlay Settings" Height="225" Width="400">
+        Title="Overlay Settings" Height="150" Width="200">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Style.Triggers>
@@ -17,7 +17,7 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <TextBox x:Name="PortNumberTxt" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="PortNumberTxt_TextChanged">
+        <TextBox x:Name="PortNumberTxt" HorizontalAlignment="Left" Margin="10,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="PortNumberTxt_TextChanged">
             <TextBox.Text>
                 <Binding Path="PortNumber" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
                     <Binding.ValidationRules>
@@ -27,7 +27,12 @@
             </TextBox.Text>
         </TextBox>
 
-        <Button x:Name="SaveBtn" Content="Save" HorizontalAlignment="Left" Margin="135,9,0,0" VerticalAlignment="Top" Click="SaveBtn_Click"/>
+        <Button x:Name="SaveBtn" Content="Save" HorizontalAlignment="Left" Margin="135,24,0,0" VerticalAlignment="Top" Click="SaveBtn_Click"/>
+        <Button x:Name="BasicBtn" Content="Basic" HorizontalAlignment="Left" Margin="10,73,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.956,4.215" Click="BasicBtn_Click"/>
+        <Button x:Name="CenterBtn" Content="Center" HorizontalAlignment="Left" Margin="46,73,0,0" VerticalAlignment="Top" Background="#FFDDDDDD" RenderTransformOrigin="-0.274,-0.927" Click="CenterBtn_Click"/>
+        <Label Content="Port Number:" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" FontSize="10"/>
+        <Label Content="Overlay:" HorizontalAlignment="Left" Margin="5,50,0,0" VerticalAlignment="Top" FontSize="10"/>
+        <Button x:Name="LoudBtn" Content="Loud" HorizontalAlignment="Left" Margin="90,73,0,0" VerticalAlignment="Top" Click="LoudBtn_Click"/>
     </Grid>
 </Window>
 

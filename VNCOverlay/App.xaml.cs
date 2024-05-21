@@ -13,18 +13,16 @@ namespace VNCOverlay
 {
     public partial class App : Application
     {
-        private IHost _host;
-        private EventLog _eventLog;
-        private NotifyIcon _notifyIcon;
-        private MainWindow _mainWindow;
+        private IHost _host { get; }       
+        private NotifyIcon _notifyIcon; 
+        private EventLogHelper _eventLogHelper;
+        private OverlayHelper _overlayHelper;
+        private PortsHelper _portsHelper;
        
         private string _overlay;
 
         public App()
-        {
-            _eventLog = EventLogHelper.InitializeEventLog();
-            _overlay = Utilities.InitializeOverlay();
-
+        {                   
             _host = Host.CreateDefaultBuilder()
                         .ConfigureAppConfiguration((context, config) =>
                         {
@@ -32,31 +30,31 @@ namespace VNCOverlay
                         })
                         .ConfigureServices((context, services) =>
                         {  
-                            services.AddSingleton(_eventLog);
+                            services.AddSingleton<EventLogHelper>();
                             services.AddSingleton<PortsHelper>();
+                            services.AddSingleton<OverlayHelper>();
                             services.AddHostedService<Worker>();
                             services.AddLogging(configure => configure.AddConsole());
                         })
-                        .Build();
-
-            // Initialize the tray icon
-            InitializeTrayIcon();
-            
+                        .Build();  
         }
 
         protected override async void OnStartup(StartupEventArgs e)
-        {
-            _eventLog.WriteEntry("Starting VNCOverlay service", EventLogEntryType.Information);
+        {         
             base.OnStartup(e);           
             await _host.StartAsync();
+            InitializeTrayIcon();
 
-            var portsHelper = _host.Services.GetRequiredService<PortsHelper>();
-            portsHelper.LoadPorts();
+            _eventLogHelper = _host.Services.GetRequiredService<EventLogHelper>();           
+            _portsHelper = _host.Services.GetRequiredService<PortsHelper>();
+            _overlayHelper = _host.Services.GetRequiredService<OverlayHelper>();
+
+            _eventLogHelper.EventLog.WriteEntry("Starting VNCOverlay service", EventLogEntryType.Information);
         }
 
         protected override async void OnExit(ExitEventArgs e)
         {
-            _eventLog.WriteEntry("Stopping VNCOverlay service", EventLogEntryType.Information);
+            _eventLogHelper.EventLog.WriteEntry("Stopping VNCOverlay service", EventLogEntryType.Information);
             await _host.StopAsync();
             _host.Dispose();
             _notifyIcon.Dispose();
@@ -81,7 +79,7 @@ namespace VNCOverlay
 
         private void OnSettingsClicked(object sender, EventArgs e)
         {
-            var settingsWindow = new SettingsWindow();
+            var settingsWindow = new SettingsWindow(_portsHelper, _overlayHelper);
             settingsWindow.Show();
         }
 

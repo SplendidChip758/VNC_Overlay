@@ -11,23 +11,25 @@ namespace VNCOverlay
     public class Worker : BackgroundService
     {       
         private readonly ILogger<Worker> _logger;
-        private readonly EventLog _eventLog;
+        private readonly EventLogHelper _eventLogHelper;
         private readonly PortsHelper _portsHelper;
+        private readonly OverlayHelper _overlayHelper;
         private readonly HashSet<int> _activeConnections = new HashSet<int>();
         private bool _overlayVisible = false;       
 
-        public Worker(ILogger<Worker> logger, EventLog eventLog, PortsHelper portsHelper)
+        public Worker(ILogger<Worker> logger, EventLogHelper eventLogHelper, PortsHelper portsHelper, OverlayHelper overlayHelper)
         {
             _logger = logger;
-            _eventLog = eventLog;
+            _eventLogHelper = eventLogHelper;
             _portsHelper = portsHelper;
+            _overlayHelper = overlayHelper;
                        
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            _eventLog.WriteEntry("Worker running at: " + DateTimeOffset.Now, EventLogEntryType.Information);
+            _eventLogHelper.EventLog.WriteEntry("Worker running at: " + DateTimeOffset.Now, EventLogEntryType.Information);
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -42,11 +44,12 @@ namespace VNCOverlay
                         if (_activeConnections.Add(conn.LocalEndPoint.Port))
                         {
                             _logger.LogInformation($"Established connection found on port {conn.LocalEndPoint.Port} at: {DateTimeOffset.Now}");
-                            _eventLog.WriteEntry($"Established connection found on port {conn.LocalEndPoint.Port} at: {DateTimeOffset.Now}", EventLogEntryType.Information);
+                            _eventLogHelper.EventLog.WriteEntry($"Established connection found on port {conn.LocalEndPoint.Port} at: {DateTimeOffset.Now}", EventLogEntryType.Information);
 
                             if (!_overlayVisible)
                             {
-
+                                _overlayHelper.ShowOverlay();
+                                _overlayVisible = true;
                             }
                         }
                     }
@@ -57,7 +60,8 @@ namespace VNCOverlay
                     // If no active connections, send "Hide" command
                     if (_activeConnections.Count == 0 && _overlayVisible)
                     {
-
+                        _overlayHelper.HideOverlay();
+                        _overlayVisible = false;
                     }
 
                     await Task.Delay(1000, stoppingToken);
@@ -65,7 +69,7 @@ namespace VNCOverlay
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "An error occurred.");
-                    _eventLog.WriteEntry($"An error occurred: {ex.Message}", EventLogEntryType.Error);
+                    _eventLogHelper.EventLog.WriteEntry($"An error occurred: {ex.Message}", EventLogEntryType.Error);
                 }
             }
         }
