@@ -1,51 +1,48 @@
-﻿using System.Windows;
-using System.Diagnostics;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Configuration;
+using System.Diagnostics;
+using System.Windows;
 using Application = System.Windows.Application;
 
 namespace VNCOverlay
 {
     public partial class App : Application
     {
-        private IHost _host { get; }       
-        private NotifyIcon _notifyIcon; 
+        private IHost _host { get; }
+        private NotifyIcon _notifyIcon;
         private EventLogHelper _eventLogHelper;
         private OverlayHelper _overlayHelper;
         private PortsHelper _portsHelper;
-       
+
         private string _overlay;
 
         public App()
-        {                   
+        {
             _host = Host.CreateDefaultBuilder()
                         .ConfigureAppConfiguration((context, config) =>
                         {
                             config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                         })
                         .ConfigureServices((context, services) =>
-                        {  
+                        {
                             services.AddSingleton<EventLogHelper>();
                             services.AddSingleton<PortsHelper>();
                             services.AddSingleton<OverlayHelper>();
                             services.AddHostedService<Worker>();
                             services.AddLogging(configure => configure.AddConsole());
                         })
-                        .Build();  
+                        .Build();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
-        {         
-            base.OnStartup(e);           
+        {
+            base.OnStartup(e);
             await _host.StartAsync();
             InitializeTrayIcon();
 
-            _eventLogHelper = _host.Services.GetRequiredService<EventLogHelper>();           
+            _eventLogHelper = _host.Services.GetRequiredService<EventLogHelper>();
             _portsHelper = _host.Services.GetRequiredService<PortsHelper>();
             _overlayHelper = _host.Services.GetRequiredService<OverlayHelper>();
 

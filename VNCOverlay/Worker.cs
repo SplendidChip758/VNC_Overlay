@@ -1,21 +1,18 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Configuration;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
-using System.Windows.Media;
 
 namespace VNCOverlay
 {
     public class Worker : BackgroundService
-    {       
+    {
         private readonly ILogger<Worker> _logger;
         private readonly EventLogHelper _eventLogHelper;
         private readonly PortsHelper _portsHelper;
         private readonly OverlayHelper _overlayHelper;
         private readonly HashSet<int> _activeConnections = new HashSet<int>();
-        private bool _overlayVisible = false;       
+        private bool _overlayVisible = false;
 
         public Worker(ILogger<Worker> logger, EventLogHelper eventLogHelper, PortsHelper portsHelper, OverlayHelper overlayHelper)
         {
@@ -23,7 +20,7 @@ namespace VNCOverlay
             _eventLogHelper = eventLogHelper;
             _portsHelper = portsHelper;
             _overlayHelper = overlayHelper;
-                       
+
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

@@ -1,8 +1,0 @@
-﻿<Project Sdk="WixToolset.Sdk/5.0.0">
-  <PropertyGroup>
-    <Configurations>Debug;Release;Bitmap</Configurations>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="WixToolset.Util.wixext" Version="5.0.0" />
-  </ItemGroup>
-</Project>
