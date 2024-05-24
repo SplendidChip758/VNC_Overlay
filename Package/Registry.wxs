@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+	  <Component Id="RegistryComponent">
+		  <RegistryValue Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Run" Name="VNCOverlay" Value="[INSTALLFOLDER]VNCOverlay.exe" Type="string"/>
+	  </Component>  	
+  </Fragment>	
+</Wix>

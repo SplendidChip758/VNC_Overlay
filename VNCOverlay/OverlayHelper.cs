@@ -46,6 +46,7 @@ namespace VNCOverlay
             if (!string.IsNullOrWhiteSpace(overlayType) && (overlayType == "basic" || overlayType == "center" || overlayType == "loud"))
             {
                 OverlayType = overlayType;
+                SaveOverlayType(overlayType);
 
             }
             else
