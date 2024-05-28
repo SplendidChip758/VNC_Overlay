@@ -16,16 +16,24 @@
 	<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch VNCOverlay" />
 	<WixVariable Id="WixUILicenseRtf" Value="LicenseAgreement.rtf" />
 
+	  <!-- Immediate Custom Action to Set CustomActionData -->
+	  <CustomAction Id="SetCustomActionData"
+					Property="LaunchApplication"
+					Value="INSTALLFOLDER=[INSTALLFOLDER]"
+					Execute="immediate" />
+
 	  <CustomAction Id="LaunchApplication"
 					BinaryRef="CustomAction.CA.dll"
 					DllEntry="LaunchApplication"
 					Execute="deferred"
-					Return="check" />
+					Return="check" 
+					Impersonate="no" />
 	  <Binary Id="CustomAction.CA.dll" SourceFile="$(SolutionDir)CustomAction\bin\Release\net472\CustomAction.CA.dll" />
 
 	  <!-- Schedule the Custom Action -->
 	  <InstallExecuteSequence>
-		  <Custom Action="LaunchApplication" Before="InstallFinalize" Condition="NOT Installed"/>
+		  <Custom Action="SetCustomActionData" Before="LaunchApplication" Condition="NOT Installed"/>
+		  <Custom Action="LaunchApplication" After="InstallFiles" Condition="NOT Installed"/>
 	  </InstallExecuteSequence>
   </Package>
 </Wix>
