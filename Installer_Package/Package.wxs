@@ -1,0 +1,31 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+	 xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+	 xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="VNCoverlay" Manufacturer="SplendidChip758" Version="1.0.0.0" UpgradeCode="b11d9435-df31-42bc-bd26-067b2740b892">
+    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+	<MediaTemplate EmbedCab="yes" />
+	  
+	  <!-- Feature definition -->
+    <Feature Id="MainFeature" Title="Main Feature" Level="1">
+		<ComponentGroupRef Id="Files" />
+		<ComponentRef Id="RegistryComponent" />
+    </Feature>
+	  	    
+	<ui:WixUI Id="WixUI_Minimal"/>
+
+	<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch VNCOverlay" />
+	<WixVariable Id="WixUILicenseRtf" Value="LicenseAgreement.rtf" />
+
+	  <CustomAction Id="LaunchApplication"
+					BinaryRef="CustomAction.CA.dll"
+					DllEntry="LaunchApplication"
+					Execute="deferred"
+					Return="check" />
+	  <Binary Id="CustomAction.CA.dll" SourceFile="$(SolutionDir)CustomAction\bin\Release\net472\CustomAction.CA.dll" />
+
+	  <!-- Schedule the Custom Action -->
+	  <InstallExecuteSequence>
+		  <Custom Action="LaunchApplication" Before="InstallFinalize" Condition="NOT Installed"/>
+	  </InstallExecuteSequence>
+  </Package>
+</Wix>
