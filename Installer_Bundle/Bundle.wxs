@@ -1,7 +1,7 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
   <Bundle Name="VNCOverlay" Manufacturer="SplendidChip758" Version="1.0.0.0" UpgradeCode="09b02035-e879-469c-a070-60b108f0c8d5">
     <BootstrapperApplication>
-      <bal:WixStandardBootstrapperApplication LicenseUrl="https://www.example.com/license" Theme="hyperlinkLicense" />
+      <bal:WixStandardBootstrapperApplication LicenseFile="LicenseAgreement.rtf" Theme="rtfLicense" />
     </BootstrapperApplication>
 
     <Chain>

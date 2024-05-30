@@ -16,8 +16,6 @@ namespace VNCOverlay
         private OverlayHelper _overlayHelper;
         private PortsHelper _portsHelper;
 
-        private string _overlay;
-
         public App()
         {
             _host = Host.CreateDefaultBuilder()
@@ -41,6 +39,7 @@ namespace VNCOverlay
             base.OnStartup(e);
             await _host.StartAsync();
             InitializeTrayIcon();
+            Debugger.Launch();
 
             _eventLogHelper = _host.Services.GetRequiredService<EventLogHelper>();
             _portsHelper = _host.Services.GetRequiredService<PortsHelper>();
