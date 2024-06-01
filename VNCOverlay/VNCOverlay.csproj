@@ -37,13 +37,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-	<Target Name="MyPropertySetter" DependsOnTargets="GetBuildVersion">
-		<PropertyGroup>
-			<MyOwnProperty>$(AssemblyVersion)</MyOwnProperty>
-		</PropertyGroup>
-	</Target>
-
-	<!-- Ensure the target is called during the build -->
-	<Target Name="BeforeBuild" DependsOnTargets="MyPropertySetter" />
 </Project>
