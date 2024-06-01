@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+	 xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+	<Fragment>
+		<Property Id="NETCORE8FOUND">
+			<RegistrySearch Id="NetCore8Install" Root="HKLM" Key="SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedhost" Name="Version" Type="raw" />
+		</Property>
+		<PackageGroup Id="NetCoreRuntime">
+			<ExePackage
+		   Id="NetCoreRuntime"
+		   DisplayName=".NET 8 Runtime"
+		   SourceFile="$(SolutionDir)ext\windowsdesktop-runtime-8.0.5-win-x64.exe"
+		   Compressed="yes"
+		   PerMachine="yes"
+		   Vital="yes"
+		   DetectCondition="NOT NETCORE8FOUND"
+		   InstallArguments="/quite /norestart"
+		   UninstallArguments="/uninstall /quiet /norestart">
+			</ExePackage>
+		</PackageGroup>
+	</Fragment>
+</Wix>

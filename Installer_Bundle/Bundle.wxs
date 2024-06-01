@@ -1,0 +1,13 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+  <Bundle Name="VNCOverlay" Manufacturer="SplendidChip758" Version="1.0.0.0" UpgradeCode="09b02035-e879-469c-a070-60b108f0c8d5">
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication LicenseFile="LicenseAgreement.rtf" Theme="rtfLicense" />
+    </BootstrapperApplication>
+
+    <Chain>
+		<PackageGroupRef Id="NetCoreRuntime" />
+		<MsiPackage SourceFile="$(SolutionDir)Installer_Package\bin\x64\Release\en-US\VNCOverlay_Installer_Package.msi"/>
+    </Chain>
+
+  </Bundle>
+</Wix>

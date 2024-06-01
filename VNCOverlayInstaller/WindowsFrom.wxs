@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Fragment>
-	  <Component Id="WindowsFrom" Guid="*">
-		  <File Id="FormAppEXE" Source="E:\source\repos\VNCOverlay\VNCOverlayConfigUI\bin\Release\net8.0-windows\publish\win-x64\VNCOverlayConfigUI.exe" KeyPath="yes" Checksum="yes"/>
-	  </Component>
-  </Fragment>
-</Wix>
