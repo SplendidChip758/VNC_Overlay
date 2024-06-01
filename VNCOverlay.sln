@@ -14,6 +14,12 @@ Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "Installer_Bundle", "Install
 		{1E7D08C6-A0EA-4755-8099-EB0A2104968F} = {1E7D08C6-A0EA-4755-8099-EB0A2104968F}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0ACD4EDE-A6A6-4C0B-98B2-177381E6F020}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		version.json = version.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Bitmap|Any CPU = Bitmap|Any CPU
