@@ -1,6 +1,5 @@
 ﻿<Project Sdk="WixToolset.Sdk/5.0.0">
   <PropertyGroup>
-    <DefineConstants>SourceDir=E:\source\repos\VNCOverlay\VNCOverlay\bin\Release\net8.0-windows\publish\win-x86\</DefineConstants>
     <OutputName>VNCOverlay_$(MSBuildProjectName)</OutputName>
   </PropertyGroup>
   <ItemGroup>
@@ -12,17 +11,4 @@
     <ProjectReference Include="..\CustomAction\CustomAction.csproj" />
     <ProjectReference Include="..\VNCOverlay\VNCOverlay.csproj" />
   </ItemGroup>
-	<PropertyGroup>
-		<!-- Define a property to hold the assembly version -->
-		<WixDefineConstants>AssemblyVersion=$(AssemblyVersion)</WixDefineConstants>
-	</PropertyGroup>
-
-	<Target Name="BeforeBuild">
-		<!-- Ensure this target is executed before building -->
-		<PropertyGroup>
-			<DefineConstants>$(DefineConstants);AssemblyVersion=$(AssemblyVersion)</DefineConstants>
-		</PropertyGroup>
-	</Target>
-
-	<Import Project="$(WixTargetsPath)" />
 </Project>
