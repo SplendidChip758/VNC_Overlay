@@ -40,8 +40,9 @@
 
 	<Target Name="MyPropertySetter" DependsOnTargets="GetBuildVersion">
 		<PropertyGroup>
-			<MyOwnProperty>$(AssemblyVersion)</MyOwnProperty>
+			<MyOwnProperty>My assembly version is: $(AssemblyVersion)</MyOwnProperty>
 		</PropertyGroup>
+		<Message Text="$(MyOwnProperty)" Importance="high" />
 	</Target>
 
 	<!-- Ensure the target is called during the build -->
