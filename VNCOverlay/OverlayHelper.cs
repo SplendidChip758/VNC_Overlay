@@ -47,6 +47,7 @@ namespace VNCOverlay
             {
                 OverlayType = overlayType;
                 SaveOverlayType(overlayType);
+                
 
             }
             else
@@ -91,6 +92,13 @@ namespace VNCOverlay
                 HideOverlay();
                 ShowOverlay();
             }
+            else
+            {
+                ShowOverlay();
+                Thread.Sleep(1000);
+                HideOverlay();
+            }
+
         }
     }
 }

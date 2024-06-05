@@ -1,10 +1,23 @@
 ﻿<Project Sdk="WixToolset.Sdk/5.0.0">
   <PropertyGroup>
     <OutputType>Bundle</OutputType>
-	<OutputName>VNCOverlay_Installer</OutputName>
+    <OutputName>VNCOverlay_Installer</OutputName>
   </PropertyGroup>
-
+  <ItemGroup>
+    <None Include="VNC_Overlay_Logo.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="WixToolset.Bal.wixext" Version="5.0.0" />
   </ItemGroup>
+  <Target Name="SetVersion" BeforeTargets="PrepareForBuild">
+    <Exec Command="nbgv get-version | findstr /B Version | for /F &quot;tokens=2 delims=: &quot; %%A in ('more') do @echo %%A" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
+    </Exec>
+    <PropertyGroup>
+      <FileVersion>$(OutputOfExec)</FileVersion>
+      <DefineConstants>Version=$(OutputOfExec)</DefineConstants>
+    </PropertyGroup>
+  </Target>
 </Project>
