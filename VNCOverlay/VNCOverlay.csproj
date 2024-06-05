@@ -29,22 +29,12 @@
     <Resource Include="overlayCenterPreview.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="VNC_Overlay_Logo.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-	<Target Name="MyPropertySetter" DependsOnTargets="GetBuildVersion">
-		<PropertyGroup>
-			<MyOwnProperty>My assembly version is: $(AssemblyVersion)</MyOwnProperty>
-		</PropertyGroup>
-		<Message Text="$(MyOwnProperty)" Importance="high" />
-	</Target>
-
-	<!-- Ensure the target is called during the build -->
-	<Target Name="BeforeBuild" DependsOnTargets="MyPropertySetter" />
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="VNC_Overlay_Logo.ico">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>

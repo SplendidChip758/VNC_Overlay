@@ -2,9 +2,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
 	 xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
 	<Fragment>
-		<Property Id="NETCORE8FOUND">
-			<RegistrySearch Id="NetCore8Install" Root="HKLM" Key="SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedhost" Name="Version" Type="raw" />
-		</Property>
+
 		<PackageGroup Id="NetCoreRuntime">
 			<ExePackage
 		   Id="NetCoreRuntime"
@@ -13,10 +11,15 @@
 		   Compressed="yes"
 		   PerMachine="yes"
 		   Vital="yes"
-		   DetectCondition="NOT NETCORE8FOUND"
-		   InstallArguments="/quite /norestart"
+		   DetectCondition="true"
+		   InstallArguments="/passive /norestart"
 		   UninstallArguments="/uninstall /quiet /norestart">
 			</ExePackage>
 		</PackageGroup>
+	</Fragment>
+	<Fragment>
+		<Property Id="NETCORE8FOUND">
+			<RegistrySearch Id="NetCore8Install" Root="HKLM" Key="SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedhost" Name="Version" Type="raw" />
+		</Property>
 	</Fragment>
 </Wix>

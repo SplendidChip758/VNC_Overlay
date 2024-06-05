@@ -39,7 +39,7 @@ namespace VNCOverlay
             base.OnStartup(e);
             await _host.StartAsync();
             InitializeTrayIcon();
-            Debugger.Launch();
+            //Debugger.Launch();
 
             _eventLogHelper = _host.Services.GetRequiredService<EventLogHelper>();
             _portsHelper = _host.Services.GetRequiredService<PortsHelper>();

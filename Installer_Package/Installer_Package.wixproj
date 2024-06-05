@@ -1,7 +1,7 @@
 ﻿<Project Sdk="WixToolset.Sdk/5.0.0">
-  <PropertyGroup>
-    <OutputName>VNCOverlay_$(MSBuildProjectName)</OutputName>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputName>VNCOverlay_$(MSBuildProjectName)</OutputName>
+	</PropertyGroup> 
   <ItemGroup>
     <PackageReference Include="WixToolset.Heat" Version="5.0.0" />
     <PackageReference Include="WixToolset.UI.wixext" Version="5.0.0" />
@@ -11,4 +11,13 @@
     <ProjectReference Include="..\CustomAction\CustomAction.csproj" />
     <ProjectReference Include="..\VNCOverlay\VNCOverlay.csproj" />
   </ItemGroup>
+  <Target Name="SetVersion" BeforeTargets="PreBuildEvent">
+    <Exec Command="nbgv get-version | findstr /B Version | for /F &quot;tokens=2 delims=: &quot; %%A in ('more') do @echo %%A" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
+    </Exec>
+    <PropertyGroup>
+		<FileVersion>$(OutputOfExec)</FileVersion>
+      <DefineConstants>Version=$(OutputOfExec)</DefineConstants>
+    </PropertyGroup>
+  </Target>
 </Project>
