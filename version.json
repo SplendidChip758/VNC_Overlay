@@ -12,9 +12,5 @@
     "buildNumber": {
       "enabled": true
     }
-  },
-  "release": {
-    "branchName": "main",
-    "versionHeightOffset": 0
   }
 }
