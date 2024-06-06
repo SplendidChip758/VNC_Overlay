@@ -33,6 +33,7 @@
         <Label Content="Port Number:" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" FontSize="10"/>
         <Label Content="Overlay:" HorizontalAlignment="Left" Margin="5,50,0,0" VerticalAlignment="Top" FontSize="10"/>
         <Button x:Name="LoudBtn" Content="Loud" HorizontalAlignment="Left" Margin="90,73,0,0" VerticalAlignment="Top" Click="LoudBtn_Click"/>
+        <Ellipse x:Name="OverlayActive" Margin="50,58,0,0" Stroke="Black" Width="10" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top"  />
     </Grid>
 </Window>
 

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace VNCOverlay
 {
@@ -19,6 +20,12 @@ namespace VNCOverlay
             this.DataContext = viewModel;
             _portsHelper = portsHelper;
             _overlayHelper = overlayHelper;
+
+            // Subscribe to the overlay status changed event
+            _overlayHelper.OverlayStatusChanged += OnOverlayStatusChanged;
+
+            // Set initial color based on the overlay's current status
+            UpdateEllipseColor(_overlayHelper.IsOverlayActive);
         }
 
         private void PortNumberTxt_TextChanged(object sender, TextChangedEventArgs e)
@@ -54,6 +61,23 @@ namespace VNCOverlay
         private void LoudBtn_Click(object sender, RoutedEventArgs e)
         {
             _overlayHelper.UpdateOverlayType("loud");
+        }
+
+        private void OnOverlayStatusChanged(bool isActive)
+        {
+            UpdateEllipseColor(isActive);
+        }
+
+        private void UpdateEllipseColor(bool isActive)
+        {
+            if (isActive)
+            {
+                OverlayActive.Fill = new SolidColorBrush(Colors.Green);
+            }
+            else
+            {
+                OverlayActive.Fill = new SolidColorBrush(Colors.Red);
+            }
         }
     }
 }

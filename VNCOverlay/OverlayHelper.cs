@@ -10,6 +10,9 @@ namespace VNCOverlay
         private readonly MainWindow _mainWindow;
         public string OverlayType { get; private set; }
 
+        private bool isOverlayActive;
+        public event Action<bool> OverlayStatusChanged;
+
         public OverlayHelper(IConfiguration configuration, ILogger<OverlayHelper> logger)
         {
             _configuration = configuration;
@@ -19,6 +22,8 @@ namespace VNCOverlay
 
             LoadOverlayType();
         }
+
+        public bool IsOverlayActive => isOverlayActive;
 
         public void LoadOverlayType()
         {
@@ -47,8 +52,7 @@ namespace VNCOverlay
             {
                 OverlayType = overlayType;
                 SaveOverlayType(overlayType);
-                
-
+                RefreshOverlay();
             }
             else
             {
@@ -77,12 +81,18 @@ namespace VNCOverlay
             }
 
             _mainWindow.Show();
+
+            isOverlayActive = true;
+            OverlayStatusChanged?.Invoke(isOverlayActive);
         }
 
         public void HideOverlay()
         {
             _mainWindow.Hide();
             _mainWindow.HideOverlays();
+
+            isOverlayActive = false;
+            OverlayStatusChanged?.Invoke(isOverlayActive);
         }
 
         public void RefreshOverlay()
